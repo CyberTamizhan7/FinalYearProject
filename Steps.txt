@@ -1,0 +1,8 @@
+1. Convert PDF to PNG Images
+2. Detect chess boards in PNG Images
+3. Zoom in 3.5% to remove outer edges from chess board
+
+
+Till now...
+
+22 Chessboard's pieces are saved in data set and i made 100 epochs for it, let's check it with test data tomorrow... sorry today morning

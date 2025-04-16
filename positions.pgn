@@ -1,0 +1,63 @@
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 1"]
+[FEN "8/1p3k2/4p1p1/Pp2P3/1p2kP2/1K2q1P1/3K4/8 b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 2"]
+[FEN "8/1p2Kk2/p1pK1p2/P7/1P6/7K/8/8 b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 3"]
+[FEN "p2KKpkK/1k3PPb/k1R5/8/2P5/8/R3P2P/R3K1PP b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 4"]
+[FEN "5p2/1P6/6PP/1R1P4/8/8/Rr2P2P/6PP b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 5"]
+[FEN "4K3/P4P2/8/R2P1PP1/8/8/8/5PPP b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 6"]
+[FEN "1K6/pb3p2/3p3K/3p3p/1K2KP2/2R4b/PP4P1/6K1 b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 7"]
+[FEN "2R5/p4p2/4b2p/2p2p1P/2P1k1p1/1PKN4/P5P1/3R4 b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 8"]
+[FEN "8/5p1p/8/2K3p1/5KP1/1P1K1b1P/8/8 b"]
+
+*
+
+[Event "Chess Position"]
+[Date "2025.04.16"]
+[White "Position 9"]
+[FEN "8/p5p1/4bp1p/1R2p1KP/4P1P1/5PK1/8/8 b"]
+
+*
+

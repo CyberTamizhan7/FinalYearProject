@@ -1,0 +1,15 @@
+Black Bishop : 14
+Black Blank : 862
+Black King : 32
+Black Knight : 6
+Black Pawn : 87
+Black Queen : 17
+Black Rook : 22
+
+White Bishop : 12
+White Blank : 809
+White King : 32
+White Knight : 13
+White Pawn : 63
+White Queen : 14
+White Rook : 25
