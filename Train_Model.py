@@ -1,9 +1,15 @@
 import os
 import json
+import time
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import layers, models
 import matplotlib.pyplot as plt
+
+
+# Start Time
+start = time.perf_counter()
+
 
 # Parameters
 IMAGE_SIZE = (100, 100)
@@ -77,3 +83,16 @@ plt.ylabel('Accuracy')
 plt.legend()
 plt.title("Training vs Validation Accuracy")
 plt.show()
+
+
+
+# End Time
+end = time.perf_counter()
+
+total_seconds = end-start
+
+hours = int(total_seconds//3600)
+minutes = int((total_seconds%3600)//60)
+seconds = total_seconds%60
+
+print(f"Total Running Time : {hours}hours {minutes}minutes {seconds:.2f}seconds")

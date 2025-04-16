@@ -1,10 +1,15 @@
 import os
 import cv2
 import json
+import time
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 from datetime import datetime
+
+
+# Start Time
+start = time.perf_counter()
 
 
 today_date = datetime.today().strftime('%Y.%m.%d')
@@ -105,3 +110,18 @@ with open(output_path, "w") as pgn_file:
         pgn_file.write("*\n\n")
 
 print(f"\n✅ All positions saved to: {output_path}")
+
+
+
+
+
+# End Time
+end = time.perf_counter()
+
+total_seconds = end-start
+
+hours = int(total_seconds//3600)
+minutes = int((total_seconds%3600)//60)
+seconds = int(total_seconds%60)
+
+print(f"Total Running Time : {hours}hours {minutes}minutes {seconds:.2f}seconds")

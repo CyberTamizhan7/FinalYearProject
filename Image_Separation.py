@@ -2,7 +2,11 @@ import os
 import fnmatch
 import cv2
 import numpy as np
+import time
 from pdf2image import convert_from_path
+
+# Start Time
+start = time.perf_counter()
 
 # Convert PDF to images
 def pdf_to_images(pdf_file, output_folder):
@@ -95,7 +99,7 @@ def detect_chess_boards(input_image_path, squares_folder, board_output_folder, c
             for col in range(8):
                 square = warped[row*square_size:(row+1)*square_size, col*square_size:(col+1)*square_size]
                 square_name = get_chess_square_name(row, col)
-                square_filename = os.path.join(board_folder, f"board{count}_{square_name}.jpg")
+                square_filename = os.path.join(board_folder, f"board__{count}_{square_name}.jpg")
                 cv2.imwrite(square_filename, square)
 
         count += 1
@@ -104,7 +108,7 @@ def detect_chess_boards(input_image_path, squares_folder, board_output_folder, c
 
 # === Main Execution ===
 base_folder = r'C:\Users\admin\Desktop\Final Year Project'
-pdf_file = os.path.join(base_folder, 'Documents', 'Deadly_19.pdf')
+pdf_file = os.path.join(base_folder, 'Documents', 'Greatest_551_17.pdf')
 png_output_dir = os.path.join(base_folder, 'Images', 'PNGs')
 chess_board_output_dir = os.path.join(base_folder, 'Images', 'Detected_Chess_Boards')
 squares_output_dir = os.path.join(base_folder, 'Images', 'Squares')
@@ -121,3 +125,17 @@ for filename in image_files:
     img_path = os.path.join(png_output_dir, filename)
     print(f"Processing {filename}...")
     board_count = detect_chess_boards(img_path, squares_output_dir, chess_board_output_dir, board_count)
+
+
+
+# End Time
+end = time.perf_counter()
+
+total_seconds = end-start
+
+hours = int(total_seconds // 3600)
+minutes = int((total_seconds % 3600) // 60)
+seconds = total_seconds % 60
+
+print(f"Total Running Time: {hours}hours {minutes}minutes {seconds:.2f}seconds")
+    
