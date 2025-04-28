@@ -1,100 +1,124 @@
+# Model Training
+
 import os
 import json
 import time
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras import layers, models
+import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.utils import class_weight
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications import EfficientNetB0
+from tensorflow.keras import layers, models, callbacks
+from tensorflow.keras.optimizers import Adam
 
-#Hi
-
-
-# Start Time
+# Start Timer
 start = time.perf_counter()
 
-
-# Parameters
-IMAGE_SIZE = (100, 100)
-BATCH_SIZE = 32
-EPOCHS = 16
-
 # Dataset path
-dataset_path = r"C:\Users\admin\Desktop\Final Year Project\Dataset\chess_pieces"
+dataset_path = "/content/FinalYearProject/Dataset/chess_pieces"
+IMAGE_SIZE = (224, 224)
+BATCH_SIZE = 32
+EPOCHS = 50
 
-# === No need to preprocess folders, since they are already flattened ===
-
-# Load dataset
+# Data Augmentation and Rescaling
 datagen = ImageDataGenerator(
-    rescale=1.0 / 255,
-    validation_split=0.2
+    rescale=1./255,
+    validation_split=0.2,
+    rotation_range=15,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    zoom_range=0.1,
+    horizontal_flip=True
 )
 
-train_generator = datagen.flow_from_directory(
+# Train and validation generators
+train_gen = datagen.flow_from_directory(
     dataset_path,
     target_size=IMAGE_SIZE,
     batch_size=BATCH_SIZE,
     class_mode='categorical',
-    subset='training'
+    subset='training',
+    shuffle=True
 )
 
-val_generator = datagen.flow_from_directory(
+val_gen = datagen.flow_from_directory(
     dataset_path,
     target_size=IMAGE_SIZE,
     batch_size=BATCH_SIZE,
     class_mode='categorical',
-    subset='validation'
+    subset='validation',
+    shuffle=False
 )
 
-# Class names
-class_names = list(train_generator.class_indices.keys())
+# Class names and weights
+class_names = list(train_gen.class_indices.keys())
 print("Classes:", class_names)
 
-# Build CNN model
+# Compute class weights
+labels = train_gen.classes
+weights = class_weight.compute_class_weight(
+    class_weight='balanced',
+    classes=np.unique(labels),
+    y=labels
+)
+class_weights = dict(enumerate(weights))
+
+# Build model using EfficientNetB0
+base_model = EfficientNetB0(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+base_model.trainable = False  # Freeze base model initially
+
 model = models.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 3)),
-    layers.MaxPooling2D(2, 2),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D(2, 2),
-    layers.Flatten(),
+    base_model,
+    layers.GlobalAveragePooling2D(),
     layers.Dense(128, activation='relu'),
+    layers.Dropout(0.3),
     layers.Dense(len(class_names), activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Adam(1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Callbacks
+early_stop = callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+checkpoint = callbacks.ModelCheckpoint("best_chess_model.h5", save_best_only=True)
 
 # Train model
 history = model.fit(
-    train_generator,
-    validation_data=val_generator,
-    epochs=EPOCHS
+    train_gen,
+    validation_data=val_gen,
+    epochs=EPOCHS,
+    class_weight=class_weights,
+    callbacks=[early_stop, checkpoint]
 )
 
-# Save class labels in same order as training
+# Save class labels
 with open("class_labels.json", "w") as f:
     json.dump(class_names, f)
 
-# Save model
-model.save("Chess_22.h5")
-print("Model saved as Chess_22.h5")
+print("✅ Model saved as: chess_110_100.h5")
 
 # Plot accuracy and loss
-plt.plot(history.history['accuracy'], label='train acc')
-plt.plot(history.history['val_accuracy'], label='val acc')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Train Acc')
+plt.plot(history.history['val_accuracy'], label='Val Acc')
 plt.legend()
-plt.title("Training vs Validation Accuracy")
+plt.title('Accuracy')
+
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.legend()
+plt.title('Loss')
+
+plt.tight_layout()
 plt.show()
 
-
-
-# End Time
+# End Timer
 end = time.perf_counter()
+total_time = end - start
+hours = int(total_time // 3600)
+minutes = int((total_time % 3600) // 60)
+seconds = total_time % 60
 
-total_seconds = end-start
-
-hours = int(total_seconds//3600)
-minutes = int((total_seconds%3600)//60)
-seconds = total_seconds%60
-
-print(f"Total Running Time : {hours}hours {minutes}minutes {seconds:.2f}seconds")
+print(f"Total Training Time: {hours}h {minutes}m {seconds:.2f}s")
