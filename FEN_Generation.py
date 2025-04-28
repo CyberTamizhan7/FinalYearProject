@@ -16,7 +16,7 @@ today_date = datetime.today().strftime('%Y.%m.%d')
 
 
 # === Load the model ===
-model = load_model("Chess_22_20.h5")
+model = load_model("Chess_110_100.h5")
 
 # === Load class labels ===
 with open("class_labels.json", "r") as f:
@@ -57,12 +57,12 @@ def compress_fen_row(row):
     return result
 
 # === Base path for all folders ===
-base_path = r"C:\Users\admin\Desktop\Final Year Project\Images\Squares"
+base_path = r"C:\Users\Care Pix\Desktop\Final Year Project\Images\Squares"
 
 # === Pieces dictionary ===
 piecesDict = {
-    "black_king":"k", "black_queen":"q", "black_rook":"r", "black_bishop":"b", "black_knight":"n", "black_pawn":"p",
-    "white_king":"K", "white_queen":"Q", "white_rook":"R", "white_bishop":"B", "white_knight":"N", "white_pawn":"P"
+    "black_king": "k", "black_queen": "q", "black_rook": "r", "black_bishop": "b", "black_knight": "n", "black_pawn": "p",
+    "white_king": "K", "white_queen": "Q", "white_rook": "R", "white_bishop": "B", "white_knight": "N", "white_pawn": "P"
 }
 
 # === Output PGN file ===
@@ -72,7 +72,7 @@ output_path = os.path.join(final_project_path, "positions.pgn")
 with open(output_path, "w") as pgn_file:
 
     # Loop through chess_board_1 to chess_board_722
-    for board_num in range(1, 10):
+    for board_num in range(1, 10):  # Update the range to process all your boards (1 to 722 or whatever you need)
         folder_path = os.path.join(base_path, f"chess_board_{board_num}")
         if not os.path.exists(folder_path):
             print(f"❌ Folder not found: {folder_path}")
@@ -83,7 +83,7 @@ with open(output_path, "w") as pgn_file:
 
         # Process images in sorted order
         for filename in sorted(os.listdir(folder_path)):
-            if filename.lower().endswith(".jpg"):
+            if filename.lower().endswith(".png"):  # Processing PNG files
                 image_path = os.path.join(folder_path, filename)
                 predicted_piece, confidence = predict_piece(image_path)
                 print(f"{filename}: {predicted_piece} ({confidence:.2f}%)")
@@ -112,16 +112,13 @@ with open(output_path, "w") as pgn_file:
 print(f"\n✅ All positions saved to: {output_path}")
 
 
-
-
-
 # End Time
 end = time.perf_counter()
 
-total_seconds = end-start
+total_seconds = end - start
 
-hours = int(total_seconds//3600)
-minutes = int((total_seconds%3600)//60)
-seconds = int(total_seconds%60)
+hours = int(total_seconds // 3600)
+minutes = int((total_seconds % 3600) // 60)
+seconds = int(total_seconds % 60)
 
 print(f"Total Running Time : {hours}hours {minutes}minutes {seconds:.2f}seconds")
